@@ -17,6 +17,6 @@ update castleRP.player2tools set toolDurability = 70 where playerId = 1 and tool
 
 select * from castleRP.player2tools;
 
-insert into location (locationName) values ("jabollah");
+insert into castleRP.location (locationName) values ("jabollah");
 
-select * from location;
+select * from castleRP.location;

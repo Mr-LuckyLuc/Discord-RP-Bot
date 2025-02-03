@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "discord.js": "^14.17.3",
+    "dotenv": "^16.4.7",
+    "fs": "^0.0.1-security",
+    "mysql2": "^3.12.0"
+  }
+}

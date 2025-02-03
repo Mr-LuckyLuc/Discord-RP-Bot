@@ -1,13 +1,18 @@
-const mysql = require('mysql2');
+const mysql = require('mysql2/promise');
 
-const db = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "root",
-  database: "castleRP"
-});
+
 
 class dbScripts {
+
+  static pool = mysql.createPool({
+    host: "localhost",
+    user: "root",
+    password: "root",
+    database: "castleRP",
+    waitForConnections: true,
+    connectionLimit: 4,
+    queueLimit: 0
+  });
 
   // players = [];
   // locations = [];
@@ -16,124 +21,76 @@ class dbScripts {
   // resources = [];
   // tools = [];
 
-  static addPlayer(player) {
-    db.connect(function(err) {
-      if (err) throw err;
-      console.log("adding player!");
-      db.query(`insert into player (playerId, playerName, health, money) values (${player.id}, '${player.name}', ${player.health}, ${player.money});`, function (err, result) {
-        if (err) throw err;
-        console.log(result);
-      });
-    });
+  static async addPlayer(player) {
+    console.log("adding player!");
+    await this.pool.execute(`insert into player (playerId, playerName, health, money) values (${player.id}, '${player.name}', ${player.health}, ${player.money});`);
+    const [result] = await this.pool.execute(`select LAST_INSERT_ID();`);
+    console.log("Query Result:", result);
+    return result;
   }
 
-  static addLocation(location) {
-    db.connect(function(err) {
-      if (err) throw err;
-      console.log("adding location!");
-      db.query(`insert into location (locationName, isShop) values ('${location.name}', ${location.isShop});`, function (err, result) {
-        if (err) throw err;
-        console.log(result);
-      });
-      db.query(`select LAST_INSERT_ID();`, function (err, result) {
-        if (err) throw err;
-        console.log(result);
-        return result;
-      });
-    });
+  static async addLocation(location) {
+    console.log("adding location!");
+    await this.pool.execute(`insert into location (locationName, isShop) values ('${location.name}', ${location.isShop});`);
+    const [result] = await this.pool.execute(`select LAST_INSERT_ID();`);
+    console.log("Query Result:", result);
+    return result;
   }
 
-  static addItem(item) {
-    db.connect(function(err) {
-      if (err) throw err;
-      console.log("adding item!");
-      db.query(`insert into item (itemName, itemValue) values ('${item.name}', ${item.value});`, function (err, result) {
-        if (err) throw err;
-        console.log(result);
-      });
-      db.query(`select LAST_INSERT_ID();`, function (err, result) {
-        if (err) throw err;
-        console.log(result);
-        return result;
-      });
-    });
+  static async addItem(item) {
+    console.log("adding item!");
+    await this.pool.execute(`insert into item (itemName, itemValue) values ('${item.name}', ${item.value});`);
+    const [result] = await this.pool.execute(`select LAST_INSERT_ID();`);
+    console.log("Query Result:", result);
+    return result;
   }
 
-  static addResource(resource) {
-    db.connect(function(err) {
-      if (err) throw err;
-      console.log("adding resource!");
-      db.query(`insert into resource (resourceName, itemId, lootInterval) values ('${resource.name}', ${resource.item.itemId}, ${resource.lootInterval});`, function (err, result) {
-        if (err) throw err;
-        console.log(result);
-      });
-      db.query(`select LAST_INSERT_ID();`, function (err, result) {
-        if (err) throw err;
-        console.log(result);
-        return result;
-      });
-    });
+  static async addResource(resource) {
+    console.log("adding resource!");
+    await this.pool.execute(`insert into resource (resourceName, itemId, lootInterval) values ('${resource.name}', ${resource.item.itemId}, ${resource.lootInterval});`);
+    const [result] = await this.pool.execute(`select LAST_INSERT_ID();`);
+    console.log("Query Result:", result);
+    return result;
   }
 
-  static addTool(tool) {
-    db.connect(function(err) {
-      if (err) throw err;
-      console.log("adding tool!");
-      db.query(`insert into tool (toolName, toolDurability, damage, speed, resourceId, valuePD) values ('${tool.name}', ${tool.durability}, ${tool.damage}, ${tool.speed}, ${tool.resource.resourceId}, ${tool.valuePD});`, function (err, result) {
-        if (err) throw err;
-        console.log(result);
-      });
-      db.query(`select LAST_INSERT_ID();`, function (err, result) {
-        if (err) throw err;
-        console.log(result);
-        return result;
-      });
-    });
+  static async addTool(tool) {
+    console.log("adding tool!");
+    await this.pool.execute(`insert into tool (toolName, toolDurability, damage, speed, resourceId, valuePD) values ('${tool.name}', ${tool.durability}, ${tool.damage}, ${tool.speed}, ${tool.resource.resourceId}, ${tool.valuePD});`);
+    const [result] = await this.pool.execute(`select LAST_INSERT_ID();`);
+    console.log("Query Result:", result);
+    return result;
   }
 
-  static addTool2Inventory(playerId, toolId, toolDurability) {
-    db.connect(function(err) {
-      if (err) throw err;
-      console.log("adding tool to inventory!");
-      db.query(`insert into player2tools (playerId, toolId, toolDurability) values ('${playerId}', ${toolId}, ${toolDurability});`, function (err, result) {
-        if (err) throw err;
-        console.log(result);
-      });
-    });
+  static async addTool2Inventory(playerId, toolId, toolDurability) {
+    console.log("adding tool to inventory!");
+    const [result] = await this.pool.execute(
+      `insert into player2tools (playerId, toolId, toolDurability) values ('${playerId}', ${toolId}, ${toolDurability});`);
+    console.log("Query Result:", result);
+    return result;
   }
 
-  static addItem2Inventory(playerId, itemId) {
-    db.connect(function(err) {
-      if (err) throw err;
-      console.log("adding item to inventory!");
-      db.query(`insert into player2items (playerId, itemId) values ('${playerId}', ${itemId});`, function (err, result) {
-        if (err) throw err;
-        console.log(result);
-      });
-    });
+  static async addItem2Inventory(playerId, itemId) {
+    console.log("adding item to inventory!");
+    const [result] = await this.pool.execute(
+      `insert into player2items (playerId, itemId) values ('${playerId}', ${itemId});`);
+    console.log("Query Result:", result);
+    return result;
   }
 
-  static changeToolDurability(playerId, toolId, oldDurability, newDurability) {
-    db.connect(function(err) {
-      if (err) throw err;
-      console.log("Changing tool durability!");
-      db.query(`update player2tools set toolDurability = ${newDurability} where playerId = ${playerId} and toolId = ${toolId} and toolDurability = ${oldDurability} limit 1;`, function (err, result) {
-        if (err) throw err;
-        console.log(result);
-      });
-    });
+  static async changeToolDurability(playerId, toolId, oldDurability, newDurability) {
+    console.log("Changing tool durability!");
+    const [result] = await this.pool.execute(
+      `update player2tools set toolDurability = ${newDurability} where playerId = ${playerId} and toolId = ${toolId} and toolDurability = ${oldDurability} limit 1;`);
+    console.log("Query Result:", result);
+    return result;
   }
 
-  static getLocation(name) {
-    db.connect(function(err) {
-      if (err) throw err;
-      console.log("looking for location!");
-      db.query(`select locationId from location where locationName = '${name}';`, function (err, result) {
-        if (err) throw err;
-        console.log(result);
-        return result;
-      });
-    });
+  static async getLocation(name) {
+    console.log("Looking for location...");
+    const [result] = await this.pool.execute(
+      `SELECT * FROM location WHERE locationName = ${name}`);
+    console.log("Query Result:", result);
+    return result;
   }
 
   //might do this later, dont know
