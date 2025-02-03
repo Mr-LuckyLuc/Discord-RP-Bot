@@ -1,0 +1,9 @@
+const { Events /*extra*/ } = require('discord.js');
+
+module.exports = {
+	name: Events.EvenType,
+	// once: true, //use to only let it execute once, default false
+	execute(params) {
+		//actual function (don't forget the params)
+	},
+};
