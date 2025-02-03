@@ -1,7 +1,7 @@
 const { dbScripts } = require("./dbScripts.js");
 
 async function getLocation() {
-    const id = await dbScripts.getLocation("jabollah");
+    const id = await dbScripts.getLocationDB("jabollah");
     console.log(id)
 }
 

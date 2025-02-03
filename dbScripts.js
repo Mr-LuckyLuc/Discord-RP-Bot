@@ -14,12 +14,12 @@ class dbScripts {
     queueLimit: 0
   });
 
-  // players = [];
-  // locations = [];
-  // shopLocations = [];
-  // items = [];
-  // resources = [];
-  // tools = [];
+  static players = [];
+  static locations = [];
+  static shopLocations = [];
+  static items = [];
+  static resources = [];
+  static tools = [];
 
   static async addPlayer(player) {
     console.log("adding player!");
@@ -85,7 +85,7 @@ class dbScripts {
     return result;
   }
 
-  static async getLocation(name) {
+  static async getLocationDB(name) {
     console.log("Looking for location...");
     const [result] = await this.pool.execute(
       `SELECT * FROM location WHERE locationName = ${name}`);
@@ -93,20 +93,57 @@ class dbScripts {
     return result;
   }
 
-  //might do this later, dont know
-  static loadPlayer(playerId) {
-
+  static async getLocations() {
+    console.log("Gathering locations!");
+    const [result] = await this.pool.execute(
+      `SELECT * FROM location`);
+    console.log("Query Result:", result);
+    return result;
   }
 
-  //might do this later, dont know
+  static async getItems() {
+    console.log("Gathering items!");
+    const [result] = await this.pool.execute(
+      `SELECT * FROM item`);
+    console.log("Query Result:", result);
+    return result;
+  }
+
+  static async getResources() {
+    console.log("Gathering resources!");
+    const [result] = await this.pool.execute(
+      `SELECT * FROM resource`);
+    console.log("Query Result:", result);
+    return result;
+  }
+
+  static async getTools() {
+    console.log("Gathering tools!");
+    const [result] = await this.pool.execute(
+      `SELECT * FROM tools`);
+    console.log("Query Result:", result);
+    return result;
+  }
+  
+  static async loadPlayer(playerId) {
+    console.log("Gathering locations!");
+    const [result] = await this.pool.execute(
+      `SELECT * FROM player WHERE playerId = ${playerId};`);
+    console.log("Query Result:", result);
+    this.players[this.players.length] = result;
+  }
+
   static startUp() {
-    //load locations
-    //load items
-    //load resources
-    //load tools
+    this.locations = this.getLocations();
+    this.shopLocations = this.locations.filter(function(location) {return location.isShop});
+    this.items = this.getItems();
+    this.resources = this.getResources();
+    this.tools = this.getTools;
     // will load player when player does something to possibly save memory
   }
 }
+
+//TODO: add the linking to eachother
 
 module.exports = {
   dbScripts
