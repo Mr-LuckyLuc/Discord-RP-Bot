@@ -1,9 +1,11 @@
 const { SlashCommandBuilder /*extra*/ } = require('discord.js');
 
 module.exports = {
+	//for cooldowns see discord.js docs: https://discordjs.guide/additional-features/cooldowns.html
 	data: new SlashCommandBuilder()
 		.setName('name')
-		.setDescription('description'),
+		.setDescription('description')
+		,
 	async execute(interaction) {
         // all necessary functions
 		await interaction.reply('reaction');

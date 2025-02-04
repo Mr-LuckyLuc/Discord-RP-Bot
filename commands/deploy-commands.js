@@ -14,10 +14,26 @@ for (const file of commandsFiles) {
     const command = require(filePath);
     if ('data' in command && 'execute' in command) {
         commands.push(command.data.toJSON());
+		console.log(`loaded ${filePath}`);
     } else {
         console.log(`[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`);
     }
 }
+
+console.log(commands[2]);
+commands.forEach(command =>
+	command.options.forEach(option => {
+		if (option.choices && option.choices[0].name == 'replace') {		//seperate deploy scripts for buy, mine and likewise commands?
+			switch (option.choices[0].value) {
+				case 'item': //get items and insert
+					break;
+				case 'resource': //get resources and insert
+					break;
+			}
+		}
+		option.choices.shift()
+	})
+);
 
 // Construct and prepare an instance of the REST module
 const rest = new REST().setToken(process.env.TOKEN);

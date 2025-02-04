@@ -1,0 +1,25 @@
+const { SlashCommandBuilder, /*extra*/ 
+ChannelType} = require('discord.js');
+
+module.exports = {
+	//for cooldowns see discord.js docs: https://discordjs.guide/additional-features/cooldowns.html
+	data: new SlashCommandBuilder()
+		.setName('move')
+		.setDescription('Move to a new location')
+		.addChannelOption(option => 
+			option.setName('destination')
+			.setDescription('The destination you want to travel to.')
+			.addChannelTypes(ChannelType.GuildText)
+		)
+		,
+	async execute(interaction) {
+		const destination = interaction.options.getChannel('destination')
+		const userID = interaction.user.id;
+		const travelChannel = interaction.guildMember.guild.channels.cache.find(channel => channel.name == "traveling"); //change this, put in client or env?
+		travelChannel.permissionOverwrites.edit(userID, { ViewChannel: true });
+		// msg.channel.permissionOverwrites.edit(userID, { ViewChannel: false }); //how to get channel from interaction?
+		// moveUserDelay(userID, travelChannel, destination, 1000);				// change to use wait
+				//base delay on grid?
+		await interaction.reply(`You are being moved to ${destination.name}, wait time (from this message): ${waitTime}`);
+	},
+};
