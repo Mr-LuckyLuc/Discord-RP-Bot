@@ -10,30 +10,30 @@ drop database if exists castleRP;
 create database castleRP;
 
 create table castleRP.player (
-	playerId bigint unsigned not null,
-    playerName varchar(20) not null,
+	id bigint unsigned not null,
+    name varchar(20) not null,
     health int not null,
     money int not null,
     primary key (playerId)
 );
 
 create table castleRP.location (
-	locationId int not null auto_increment,
-    locationName varchar(20) not null,
+	id bigint unsigned not null,
+    name varchar(20) not null,
     isShop bool default false,
     primary key (locationId)
 );
 
 create table castleRP.item (
-	itemId int not null auto_increment,
-    itemName varchar(20),
-    itemValue int not null,
+	id int not null auto_increment,
+    name varchar(20),
+    value int not null,
     primary key (itemId)
 );
 
 create table castleRP.resource (
-	resourceId int not null auto_increment,
-    resourceName varchar(20) not null,
+	id int not null auto_increment,
+    name varchar(20) not null,
     itemId int not null,
     lootInterval int not null,
     primary key (resourceId),
@@ -41,9 +41,9 @@ create table castleRP.resource (
 );
 
 create table castleRP.tool (
-	toolId int not null auto_increment,
-	toolName varchar(20),
-    toolDurability int default 100,
+	id int not null auto_increment,
+	name varchar(20),
+    durability int default 100,
     damage int not null,
     speed int not null,
     resourceId int not null,

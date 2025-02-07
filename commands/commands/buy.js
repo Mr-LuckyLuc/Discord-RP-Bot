@@ -9,10 +9,7 @@ module.exports = {
 			option.setName('item')
 			.setDescription('The item you want to buy')
 			.setRequired(true)
-			.setChoices(
-				{ name: 'replace', value: 'item'} //use autocomplete instead?
-			)
-			// redeploy regurarly for new items?
+			.setAutocomplete(true)
 		)
 		.addIntegerOption(option =>
 			option.setName('amount')
@@ -20,6 +17,15 @@ module.exports = {
 			.setMinValue(1)
 		)
 		,
+	async autocomplete(interaction) {
+		const focusedValue = interaction.options.getFocused();
+		const choices = ['Popular Topics: Threads', 'Sharding: Getting started', 'Library: Voice Connections', 'Interactions: Replying to slash commands', 'Popular Topics: Embed preview'];
+		const filtered = choices.filter(choice => choice.startsWith(focusedValue));
+		await interaction.respond(
+			filtered.map(choice => ({ name: choice.toLocaleLowerCase(), value: choice }))
+		);
+	}
+	,
 	async execute(interaction) {
 		const item = interaction.options.getString('item'); //change to actual item
 		const amount = interaction.options.getInteger('amount') ? interaction.options.getInteger('amount') : 1;

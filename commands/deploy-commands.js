@@ -3,6 +3,7 @@ require("dotenv").config({ path: __dirname+'/../.env' }); //to start process fro
 const { REST, Routes } = require('discord.js');
 const fs = require('node:fs');
 const path = require('node:path');
+const dbScripts = require('../dbScripts').dbScripts;
 
 const commands = [];
 // Grab all the command folders from the commands directory you created earlier
@@ -20,20 +21,34 @@ for (const file of commandsFiles) {
     }
 }
 
-console.log(commands[2]);
-commands.forEach(command =>
-	command.options.forEach(option => {
-		if (option.choices && option.choices[0].name == 'replace') {		//seperate deploy scripts for buy, mine and likewise commands?
+//get rid of this for autocomplete?
+commands.forEach(command => {
+	command.options.forEach(async option => {
+		if (option.choices && option.choices[0].name == 'replace') {	//seperate deploy scripts for buy, mine and likewise commands for when one gets additional choices?
 			switch (option.choices[0].value) {
 				case 'item': //get items and insert
+					const items = await dbScripts.loadItems();
+					for (const item of items) {
+						option.choices.push({ 'name' : item.itemName.toLowerCase(), 'value' : item });
+					}
 					break;
 				case 'resource': //get resources and insert
+					const resources = await dbScripts.loadResources();
+					for (const resource of resources) {
+						option.choices.push({ 'name' : resource.resourceName.toLowerCase(), 'value' : resource });
+					}
 					break;
+				case 'location':
+					const locations = await dbScripts.loadLocations();
+					for (const location of locations) {
+						option.choices.push({ 'name' : location.locationName.toLowerCase(), 'value' : location.locationId }); // can I get the whole channel instead?
+					}
 			}
+			option.choices.shift()
+			console.log(option.choices);
 		}
-		option.choices.shift()
 	})
-);
+});
 
 // Construct and prepare an instance of the REST module
 const rest = new REST().setToken(process.env.TOKEN);

@@ -6,7 +6,8 @@ module.exports = {
 		.setName('show_inventory')
 		.setDescription('See all you have collected in your inventory!')
 		,
-	async execute(interaction) { //maybe 'show' with sub commands?
+	async execute(interaction) {	//maybe 'show' with sub commands?
+									//maybe find a way to add the show inventory logic in ../../rp-slash.js
         //showInventory
 		// const inventory = Players.getPlayer(msg.author.id).items;
 		// let inventoryStr = "";
