@@ -21,15 +21,15 @@ module.exports = {
 	async autocomplete(interaction) {
 		console.log('function');
 		const focusedValue = interaction.options.getFocused(true).value;
-		const items = dbScripts.getItems();
+		const items = dbScripts.getItems();														// map these so only name is kept and the property name is name?
 		const tools = dbScripts.getTools();
-		const filteredItems = items.filter(item => item.itemName.includes(focusedValue));
-		const filteredTools = tools.filter(tool => tool.toolName.includes(focusedValue));
-		if (filteredItems.length+filteredTools.length > 25) {
-			filteredItems = items.filter(item => item.itemName.startsWith(focusedValue));
-			filteredTools = tools.filter(tool => tool.toolName.startsWith(focusedValue));
+		let filteredItems = items.filter(item => item.itemName.includes(focusedValue));
+		let filteredTools = tools.filter(tool => tool.toolName.includes(focusedValue));
+		if (filteredItems.length+filteredTools.length > 25) {									// write method for this somehow?
+			filteredItems = filteredItems.filter(item => item.itemName.startsWith(focusedValue)); 
+			filteredTools = filteredTools.filter(tool => tool.toolName.startsWith(focusedValue));
 		}
-		const choices = filteredItems.concat(filteredTools);
+		const choices = filteredItems.concat(filteredTools); 									//add an alphabetical sort
 		await interaction.respond(
 			choices.map(choice => {
 				if (choice.itemName) {
@@ -43,9 +43,18 @@ module.exports = {
 	,
 	async execute(interaction) {
 		await interaction.deferReply({ flags: MessageFlags.Ephemeral });
-		const item = interaction.options.getString('item'); //change to actual item
-		const amount = interaction.options.getInteger('amount') ? interaction.options.getInteger('amount') : 1;
-																														//add buy logic
-		interaction.editReply({ content: `You are buying ${amount} ${item}${amount>1?'s':''}.` });
+
+		const userId = interaction.user.id;
+		console.log(userId);
+		const user = dbScripts.getPlayer(userId);
+														//change into method with callbacks?
+		if (user) {
+			const item = interaction.options.getString('item'); //change to actual item
+			const amount = interaction.options.getInteger('amount') ? interaction.options.getInteger('amount') : 1;
+																															//add buy logic
+			await interaction.editReply({ content: `You are buying ${amount} ${item}${amount>1?'s':''}.` });
+		} else {
+			await interaction.editReply({ content: "Not a recognised player, user the /join command to join the game!"})
+		}
 	},
 };

@@ -1,5 +1,6 @@
 const { SlashCommandBuilder, MessageFlags } = require('discord.js');
 const wait = require('node:timers/promises').setTimeout;
+const { dbScripts } = require('../../dbScripts');
 
 module.exports = {
 	//for cooldowns see discord.js docs: https://discordjs.guide/additional-features/cooldowns.html
@@ -9,11 +10,23 @@ module.exports = {
 		.addStringOption(option => 
 			option.setName('destination')
 			.setDescription('The destination you want to travel to.')
-			.setChoices(
-				{ name: 'replace', value: 'channels'}
-			)
+			.setRequired(true)
+			.setAutocomplete(true)
 		)
 		,
+	async autocomplete(interaction) {
+		const locations = dbScripts.getLocations();
+		const focusedValue = interaction.options.getFocused(true).value;
+		let filteredLocations = locations.filter(location => location.locationName.includes(focusedValue));
+		if (filteredLocations.length > 25) {
+			filteredLocations = filteredLocations.filter(location => location.locationName.startsWith(focusedValue));
+		}
+		const choices = filteredLocations;
+		await interaction.respond(
+			choices.map(choice => ({ name: choice.locationName, value: choice.locationName }))
+		)
+	}
+	,
 	async execute(interaction) {
 		interaction.deferReply();
 		const userID = interaction.user.id;

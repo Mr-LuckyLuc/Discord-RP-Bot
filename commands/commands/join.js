@@ -8,7 +8,6 @@ module.exports = {
 		,
 	async execute(interaction) {
 		interaction.deferReply();
-		console.log(interaction);
 		const userId = interaction.user.id;
 		console.log(userId);
 		const joined = dbScripts.getPlayer(userId);
