@@ -26,8 +26,7 @@ module.exports = {
 
 			const command = interaction.client.commands.get(interaction.commandName);
 
-			console.log(interaction);
-			console.log(command);
+			console.log('autocomplete');
 
 			if (!command) {
 				console.error(`No command matching ${interaction.commandName} was found.`);

@@ -11,8 +11,6 @@ create database castleRP;
 
 create table castleRP.player (
 	id bigint unsigned not null,
-    name varchar(20) not null,
-    health int not null,
     money int not null,
     primary key (playerId)
 );

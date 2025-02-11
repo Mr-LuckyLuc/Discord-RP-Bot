@@ -1,20 +1,21 @@
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder, MessageFlags } = require('discord.js');
+const { dbScripts } = require('../../dbScripts');
 
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('join')
 		.setDescription('Join the game!')
-		.addStringOption(option =>  //get rid of this option? and make it save only id and get nickname every time when mentioning person?
-			option.setName('name')
-			.setDescription('The name you will get when joining the game')
-			.setMinLength(5)
-			.setMaxLength(50)
-		),
+		,
 	async execute(interaction) {
+		interaction.deferReply();
 		console.log(interaction);
-		const username = interaction.options.getString('name') ? interaction.options.getString('name') : interaction.user.globalName;
-		console.log(username);
-		// Players.addPlayer(msg.author.id, interaction.name);
-		await interaction.reply(`You joined as ${username}`);
+		const userId = interaction.user.id;
+		console.log(userId);
+		const joined = dbScripts.getPlayer(userId);
+		if (joined) interaction.reply({ content : `You joined the game.`, flags : MessageFlags.Ephemeral});
+		else {
+			dbScripts.addPlayer({ playerId : userId, money : 0});	//get a default player acc for new players
+			interaction.reply({ content : `You have already joined the game.`, flags : MessageFlags.Ephemeral});
+		}
 	},
 };

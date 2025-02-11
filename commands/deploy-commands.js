@@ -3,7 +3,9 @@ require("dotenv").config({ path: __dirname+'/../.env' }); //to start process fro
 const { REST, Routes } = require('discord.js');
 const fs = require('node:fs');
 const path = require('node:path');
-const dbScripts = require('../dbScripts').dbScripts;
+const { dbScripts } = require('../dbScripts');
+
+dbScripts.startUp();
 
 const commands = [];
 // Grab all the command folders from the commands directory you created earlier

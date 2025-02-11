@@ -1,7 +1,5 @@
 const mysql = require('mysql2/promise');
 
-
-
 class dbScripts {
 
   static pool = mysql.createPool({
@@ -16,7 +14,7 @@ class dbScripts {
 
   static async query(queryString) {
     console.log('querying special query');
-    const [result, dataType] = await this.pool.execute(queryString);
+    const [result] = await this.pool.execute(queryString);
     console.info("Query Result:", result);
     return result;
   }
@@ -30,7 +28,7 @@ class dbScripts {
 
   static async addPlayer(player) {
     console.log("adding player!");
-    await this.pool.execute(`insert into player (playerId, playerName, health, money) values (${player.id}, '${player.name}', ${player.health}, ${player.money});`);
+    await this.pool.execute(`insert into player (playerId, money) values (${player.id}, ${player.money});`);
     const [result] = await this.pool.execute(`select LAST_INSERT_ID();`);
     console.info("Query Result:", result);
     return result;
@@ -127,17 +125,65 @@ class dbScripts {
   static async loadTools() {
     console.log("Gathering tools!");
     const [result] = await this.pool.execute(
-      `SELECT * FROM tools`);
+      `SELECT * FROM tool`);
     console.info("Query Result:", result);
     return result;
   }
 
-  static startUp() {
-    this.locations = this.loadLocations();
+  static async getPlayer(id) {
+    console.log("Getting a player!");
+    let result = this.players.find(player => player.id == id);
+    if (result) return result;
+    result = await this.loadPlayer(id);
+    return result;
+  }
+
+  static getLocations() {
+    return this.locations;
+  }
+
+  static getLocationName(name) {
+    return this.locations.find(location => location.locationName == name);
+  }
+  
+  static getLocationId(id) {
+    return this.locations.find(location => location.locationId == id);
+  }
+
+  static getItems() {
+    return this.items
+  }
+  
+  static getItemName(name) {
+    return this.items.find(item => item.itemName == name);
+  }
+
+  static getResources() {
+    return this.resources;
+  }
+
+  static getResourceName(name) {
+    return this.resources.find(resource => resource.resourceName == name);
+  }
+
+  static getTools() {
+    return this.tools;
+  }
+
+  static getToolName(name) {
+    return this.tools.find(tool => tool.toolName == name);
+  }
+
+  // which getters do i need more 
+
+  //might want to delete this if i want to enable this bot on multiple servers :/
+  //for now this is only for one server, will have to change a lot of db stuff for the multiple server functionality
+  static async startUp() {
+    this.locations = await this.loadLocations();
+    this.items = await this.loadItems();
+    this.resources = await this.loadResources();
+    this.tools = await this.loadTools();
     this.shopLocations = this.locations.filter(function(location) {return location.isShop});
-    this.items = this.loadItems();
-    this.resources = this.loadResources();
-    this.tools = this.loadTools;
     // will load player when player does something to possibly save memory
   }
 }

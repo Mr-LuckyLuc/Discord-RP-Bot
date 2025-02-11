@@ -1,4 +1,5 @@
-const { SlashCommandBuilder /*extra*/ } = require('discord.js');
+const { SlashCommandBuilder , MessageFlags } = require('discord.js');
+const { autocomplete } = require('./buy');
 
 module.exports = {
 	//for cooldowns see discord.js docs: https://discordjs.guide/additional-features/cooldowns.html
@@ -9,18 +10,21 @@ module.exports = {
 			option.setName('resource')
 			.setDescription('Which resource you want to mine.')
 			.setRequired(true)
-			.setChoices(
-				{ name: 'replace', value: 'resource'} //use autocomplete instead?
-			)
+			.setAutocomplete(true)
 		)
 		,
+	async autocomplete() {
+
+	}
+	,
 	async execute(interaction) {
+		interaction.deferReply();
 		// const index = resources.findIndex(resource => resource.name == message);
 		// if(index >= 0){
 		// 	const resource = resources[index];
 		// 	msg.channel.send(`${msg.author.displayName} is mining ${resource.name}.`);
 		// 	Players.mine(resource);
 		// }
-		await interaction.reply('You are now mining for resources');
+		await interaction.reply({ content: 'You are now mining for resources', flags : MessageFlags.Ephemeral });
 	},
 };

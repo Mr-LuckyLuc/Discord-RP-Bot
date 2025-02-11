@@ -3,12 +3,15 @@ require("dotenv").config({ path: __dirname+'/.env' }); //to start process from .
 const fs = require('node:fs');
 const path = require('node:path');
 const { Client, Collection, Events, GatewayIntentBits } = require('discord.js');
+const {dbScripts} = require('./dbScripts');
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 client.commands = new Collection();
 
 const commandsPath = path.join(path.join(__dirname, "commands"), "commands");
 const commandsFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
+
+dbScripts.startUp();
 
 for (const file of commandsFiles) {
     const filePath = path.join(commandsPath, file);

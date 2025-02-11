@@ -1,4 +1,4 @@
-const { SlashCommandBuilder /*extra*/ } = require('discord.js');
+const { SlashCommandBuilder, MessageFlags } = require('discord.js');
 
 module.exports = {
 	//for cooldowns see discord.js docs: https://discordjs.guide/additional-features/cooldowns.html
@@ -6,8 +6,8 @@ module.exports = {
 		.setName('show_inventory')
 		.setDescription('See all you have collected in your inventory!')
 		,
-	async execute(interaction) {	//maybe 'show' with sub commands?
-									//maybe find a way to add the show inventory logic in ../../rp-slash.js
+	async execute(interaction) {	//maybe 'show' with sub commands? like stats? or help?
+		interaction.reply({ content: 'loading inventory', flags : MessageFlags.Ephemeral });
         //showInventory
 		// const inventory = Players.getPlayer(msg.author.id).items;
 		// let inventoryStr = "";
@@ -16,6 +16,5 @@ module.exports = {
 		// });
 		// inventoryStr = inventoryStr.slice(0, -2); 
 		// msg.channel.send(inventoryStr);
-		await interaction.reply('loading inventory');
 	},
 };
