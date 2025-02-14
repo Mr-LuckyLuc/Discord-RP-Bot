@@ -1,12 +1,12 @@
 delete from castleRP.player where playerId = 1;
 
-insert into castleRP.player (playerId, playerName, health, money) values (1, 'dude', 100, 100);
+insert into castleRP.player (id, money) values (1, 100);
 
-insert into castleRP.item (itemName, itemValue) values ("wood", 5);
+insert into castleRP.item (name, value) values ("wood", 5);
 
-insert into castleRP.resource (resourceName, itemId, lootInterval) values ("tree", 1, 5);
+insert into castleRP.resource (name, itemId, lootInterval) values ("tree", 1, 5);
 
-insert into castleRP.tool (toolName, toolDurability, damage, speed, resourceId, valuePD) values ("axe", 100, 5, 10, 1, 0.5);
+insert into castleRP.tool (name, durability, damage, speed, resourceId, valuePD) values ("axe", 100, 5, 10, 1, 0.5);
 
 select * from castleRP.player;
 
@@ -17,6 +17,6 @@ update castleRP.player2tools set toolDurability = 70 where playerId = 1 and tool
 
 select * from castleRP.player2tools;
 
-insert into castleRP.location (locationName) values ("jabollah");
+insert into castleRP.location (name) values ("jabollah");
 
 select * from castleRP.location;

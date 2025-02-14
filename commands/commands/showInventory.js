@@ -7,14 +7,23 @@ module.exports = {
 		.setDescription('See all you have collected in your inventory!')
 		,
 	async execute(interaction) {	//maybe 'show' with sub commands? like stats? or help?
-		interaction.reply({ content: 'loading inventory', flags : MessageFlags.Ephemeral });
-        //showInventory
-		// const inventory = Players.getPlayer(msg.author.id).items;
-		// let inventoryStr = "";
-		// inventory.forEach(item => {
-		// 	inventoryStr += item.name + ", ";
-		// });
-		// inventoryStr = inventoryStr.slice(0, -2); 
-		// msg.channel.send(inventoryStr);
+		checkUser(interaction, async (interaction) => {
+			interaction.deferReply({ flags : MessageFlags.Ephemeral });
+			//showInventory
+			const items = dbScripts.getPlayerId(interaction.user.id).items;														// map these so only name is kept and the property name is name?
+			const tools = dbScripts.getPlayerId(interaction.user.id).tools;
+			items.push({itemId: 2, itemName: 'stone', itemValue: 5});
+
+			let inventoryStr = '';
+			inventoryStr += '# Items'
+			items.forEach(item => {
+				inventoryStr += `\n Name: ${item.name} Value: ${item.value}`;
+			});
+			inventoryStr += '\n# Tools'
+			tools.forEach(tool => {
+				inventoryStr += `\n Name: ${tool.name} Value: ${tool.value}`;
+			});
+			interaction.editReply(inventoryStr);
+		});
 	},
 };

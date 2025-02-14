@@ -7,14 +7,13 @@ module.exports = {
 		.setDescription('Join the game!')
 		,
 	async execute(interaction) {
-		interaction.deferReply();
+		await interaction.deferReply({flags : MessageFlags.Ephemeral})
 		const userId = interaction.user.id;
-		console.log(userId);
-		const joined = dbScripts.getPlayer(userId);
-		if (joined) interaction.reply({ content : `You joined the game.`, flags : MessageFlags.Ephemeral});
+		const joined = await dbScripts.getPlayerId(userId);
+		if (joined) interaction.editReply({ content : `You have already joined the game.`});
 		else {
-			dbScripts.addPlayer({ playerId : userId, money : 0});	//get a default player acc for new players
-			interaction.reply({ content : `You have already joined the game.`, flags : MessageFlags.Ephemeral});
+			dbScripts.addPlayer({ id : userId, money : 0});	//get a default player acc for new players
+			interaction.editReply({ content : `You joined the game.`});
 		}
 	},
 };

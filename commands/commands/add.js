@@ -1,26 +1,13 @@
 const { SlashCommandBuilder , MessageFlags } = require('discord.js');
 const { dbScripts } = require('../../dbScripts');
-const { checkUser, filterSortFormat } = require('../commandmethods.js');
 
 module.exports = {
 	//for cooldowns see discord.js docs: https://discordjs.guide/additional-features/cooldowns.html
 	data: new SlashCommandBuilder()
-		.setName('mine')
-		.setDescription('Mine a resource')
-		.addStringOption(option => 
-			option.setName('resource')
-			.setDescription('Which resource you want to mine.')
-			.setRequired(true)
-			.setAutocomplete(true)
-		)
+		.setName('add')
+		.setDescription('add an item/resource/tool to the game.')       //Need to set the permissions!!
+		                                                                //add a subcommand thingy
 		,
-	async autocomplete() {
-		const focusedValue = interaction.options.getFocused(true).value;
-		const resources = dbScripts.getResources();
-		const choices = filterSortFormat(focusedValue, resources);
-		await interaction.respond(choices);
-	}
-	,
 	async execute(interaction) {
 		checkUser(interaction, async (interaction) => {
 			await interaction.deferReply();

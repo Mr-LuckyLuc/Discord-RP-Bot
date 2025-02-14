@@ -12,21 +12,21 @@ create database castleRP;
 create table castleRP.player (
 	id bigint unsigned not null,
     money int not null,
-    primary key (playerId)
+    primary key (id)
 );
 
 create table castleRP.location (
 	id bigint unsigned not null,
     name varchar(20) not null,
     isShop bool default false,
-    primary key (locationId)
+    primary key (id)
 );
 
 create table castleRP.item (
 	id int not null auto_increment,
     name varchar(20),
     value int not null,
-    primary key (itemId)
+    primary key (id)
 );
 
 create table castleRP.resource (
@@ -34,8 +34,8 @@ create table castleRP.resource (
     name varchar(20) not null,
     itemId int not null,
     lootInterval int not null,
-    primary key (resourceId),
-    foreign key (itemId) references item(ItemId)
+    primary key (id),
+    foreign key (itemId) references item(id)
 );
 
 create table castleRP.tool (
@@ -46,22 +46,22 @@ create table castleRP.tool (
     speed int not null,
     resourceId int not null,
     valuePD double not null,
-    primary key (toolId),
-    foreign key (resourceId) references resource(resourceId)
+    primary key (id),
+    foreign key (resourceId) references resource(id)
 );
 
 create table castleRP.player2tools (
 	playerId bigint unsigned not null,
     toolId int not null,
     toolDurability int not null,
-    foreign key (playerId) references player(playerId),
-    foreign key (toolId) references tool(toolId)
+    foreign key (playerId) references player(id),
+    foreign key (toolId) references tool(id)
 );
 
 create table castleRP.player2items (
 	playerId bigint unsigned not null,
     itemId int not null,
-    foreign key (playerId) references player(playerId),
-    foreign key (itemId) references item(itemId)
+    foreign key (playerId) references player(id),
+    foreign key (itemId) references item(id)
 );
 	
