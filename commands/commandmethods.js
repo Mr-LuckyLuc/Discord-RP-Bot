@@ -1,10 +1,8 @@
-async function checkUser(interaction, callback, role=null) {
-    await interaction.deferReply({ flags: MessageFlags.Ephemeral });
+const { dbScripts } = require('../dbScripts');
 
+async function checkUser(interaction, callback) {
     const userId = interaction.user.id;
-    console.log(userId);
-    const user = dbScripts.getPlayer(userId);
-    
+    const user = await dbScripts.getPlayerId(userId);
     if (user) {
         callback(interaction);
     } else {
@@ -12,17 +10,13 @@ async function checkUser(interaction, callback, role=null) {
     }
 }
 
-function filterSortFormat(filterValue, ...lists) {
-    const concattedList = [];
-    lists.forEach(list => concattedList.push(...list));
-    const stringList = concattedList.map(item => item.name);
-    console.log(concattedList);
+function filterSortFormat(filterValue, list) {
+    const stringList = list.map(item => item.name);
 
     let filteredList = stringList.filter(item => {
-        console.log(item);
         return item.includes(filterValue);
     });
-    console.log(filteredList.length);
+    
     if (filteredList.length > 25) {
         filteredList = filteredList.filter(item => item.startsWith(filterValue));
     }

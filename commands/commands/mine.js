@@ -24,6 +24,7 @@ module.exports = {
 	async execute(interaction) {
 		checkUser(interaction, async (interaction) => {
 			await interaction.deferReply();
+			const resource = dbScripts.getResourceName(interaction.getString('resource'));
 			// const index = resources.findIndex(resource => resource.name == message);
 			// if(index >= 0){
 			// 	const resource = resources[index];

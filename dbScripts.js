@@ -28,15 +28,16 @@ class dbScripts {
 
   static async addPlayer(player) {
     console.log("adding player!");
+    player = { id : player.id, money : player.money, items : [], tools : [] };
     await this.pool.execute(`insert into player (id, money) values (${player.id}, ${player.money});`);
-    return { id : player.id, money : player.money, items : [], tools : [] };
+    this.players.push(player);
+    return player;
   }
 
   static async addLocation(location) {
     console.log("adding location!");
-    await this.pool.execute(`insert into location (id, name, isShop) values (${location.name}, '${location.name}', ${location.isShop});`);
-    const [result] = await this.pool.execute(`select LAST_INSERT_ID();`);
-    console.info("Query Result:", result);
+    await this.pool.execute(`insert into location (id, name, isShop) values (${location.id}, '${location.name}', ${location.isShop});`);
+    this.locations.push(location);
     return result;
   }
 
@@ -45,7 +46,9 @@ class dbScripts {
     await this.pool.execute(`insert into item (name, value) values ('${item.name}', ${item.value});`);
     const [result] = await this.pool.execute(`select LAST_INSERT_ID();`);
     console.info("Query Result:", result);
-    return result;
+    item = { id : result, name : item.name, value : item.value};
+    this.items.push(item);
+    return item;
   }
 
   static async addResource(resource) {
@@ -53,7 +56,9 @@ class dbScripts {
     await this.pool.execute(`insert into resource (name, itemId, lootInterval) values ('${resource.name}', ${resource.item.itemId}, ${resource.lootInterval});`);
     const [result] = await this.pool.execute(`select LAST_INSERT_ID();`);
     console.info("Query Result:", result);
-    return result;
+    resource = { id : result, name : resource.name, item : resource.item, lootInterval : resource.lootInterval};
+    this.resources.push(resource);
+    return resource;
   }
 
   static async addTool(tool) {
@@ -61,13 +66,15 @@ class dbScripts {
     await this.pool.execute(`insert into tool (name, durability, damage, speed, resourceId, valuePD) values ('${tool.name}', ${tool.durability}, ${tool.damage}, ${tool.speed}, ${tool.resource.resourceId}, ${tool.valuePD});`);
     const [result] = await this.pool.execute(`select LAST_INSERT_ID();`);
     console.info("Query Result:", result);
-    return result;
+    tool = { id : result, name : tool.name, durability : tool.durability, damage : tool.damage, speed : tool.speed, resource: tool.resource, valuePD : tool.valuePD};
+    this.tools.push(tool);
+    return tool;
   }
 
   static async addPlayer2Tool(playerId, toolId, toolDurability) {
     console.log("adding tool to inventory!");
     const [result] = await this.pool.execute(
-      `insert into player2tools (playerId, toolId, toolDurability) values ('${playerId}', ${toolId}, ${toolDurability});`);
+      `insert into player2tools (playerId, toolId, toolDurability) values (${playerId}, ${toolId}, ${toolDurability});`);
     console.info("Query Result:", result);
     return result;
   }
@@ -75,7 +82,7 @@ class dbScripts {
   static async addPlayer2Item(playerId, itemId) {
     console.log("adding item to inventory!");
     const [result] = await this.pool.execute(
-      `insert into player2items (playerId, itemId) values ('${playerId}', ${itemId});`);
+      `insert into player2items (playerId, itemId) values (${playerId}, ${itemId});`);
     console.info("Query Result:", result);
     return result;
   }
@@ -145,13 +152,19 @@ class dbScripts {
     const [[result]] = await this.pool.execute(
       `SELECT * FROM player WHERE id = ${playerId};`);
     console.info("Query Result:", result);
+    if (result === undefined) return undefined;
     const [items] = await this.pool.execute(
-      `SELECT * FROM player2items WHERE playerId = ${playerId};`);
+      `SELECT id, name, value FROM player2items p2i LEFT JOIN item i ON i.id = p2i.itemId WHERE playerId = ${playerId};`);
     console.info("Query Result:", items);
     const [tools] = await this.pool.execute(
-      `SELECT * FROM player2tools WHERE playerId = ${playerId};`);
+      `SELECT id, name, toolDurability AS durability, damage, speed, resourceId, valuePD FROM player2tools p2t LEFT JOIN tool t ON t.id = p2t.toolId WHERE playerId = ${playerId};`);
     console.info("Query Result:", tools);
-    const player = {id: result.id, money: result.money, items: items, tools: items};
+    // const tools = [];
+    // for (const toolConnection of toolConnections) {
+    //   const id = toolConnection.id;
+    //   tools.push({ id : id, })
+    // }
+    const player = {id: result.id, money: result.money, items: items, tools: tools};
     this.players.push(player);
     return player;
   }
@@ -193,7 +206,6 @@ class dbScripts {
     let result = this.players.find(player => player.id == id);
     if (result) return result;
     result = await this.loadPlayer(id);
-    if (result.id == undefined) result = undefined;
     return result;
   }
 
@@ -238,6 +250,7 @@ class dbScripts {
   }
 
   static getToolName(name) {
+    console.debug(this.tools);
     return this.tools.find(tool => tool.name == name);
   }
 

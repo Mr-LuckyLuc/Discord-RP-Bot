@@ -10,13 +10,13 @@ drop database if exists castleRP;
 create database castleRP;
 
 create table castleRP.player (
-	id bigint unsigned not null,
+	id varchar(18) not null,
     money int not null,
     primary key (id)
 );
 
 create table castleRP.location (
-	id bigint unsigned not null,
+	id varchar(18) not null,
     name varchar(20) not null,
     isShop bool default false,
     primary key (id)
@@ -43,7 +43,6 @@ create table castleRP.tool (
 	name varchar(20),
     durability int default 100,
     damage int not null,
-    speed int not null,
     resourceId int not null,
     valuePD double not null,
     primary key (id),
@@ -51,7 +50,7 @@ create table castleRP.tool (
 );
 
 create table castleRP.player2tools (
-	playerId bigint unsigned not null,
+	playerId varchar(18) not null,
     toolId int not null,
     toolDurability int not null,
     foreign key (playerId) references player(id),
@@ -59,7 +58,7 @@ create table castleRP.player2tools (
 );
 
 create table castleRP.player2items (
-	playerId bigint unsigned not null,
+	playerId varchar(18) not null,
     itemId int not null,
     foreign key (playerId) references player(id),
     foreign key (itemId) references item(id)

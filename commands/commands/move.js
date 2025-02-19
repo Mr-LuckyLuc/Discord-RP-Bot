@@ -27,13 +27,13 @@ module.exports = {
 			await interaction.deferReply();
 			const userID = interaction.user.id;
 			const channelsCache = interaction.member.guild.channels.cache;
-			const origin = channelsCache.find(channel => channel.id == interaction.channelId);	//need to get this when this is another channel
+			const origin = channelsCache.find(channel => channel.id == interaction.channelId);
 			const destination = channelsCache.find(channel => channel.name == interaction.options.getString('destination'));
 
 			await interaction.editReply({ content: `You are being moved to ${destination.name}`, flags : MessageFlags.Ephemeral });	//check if destination is in list with destinations
 			//travel channel perhabs??
-			origin.permissionOverwrites.edit(userID, { ViewChannel: false }); //how to get channel from interaction?
-			await wait(4_000)	//base delay on grid?	
+			origin.permissionOverwrites.edit(userID, { ViewChannel: false });
+			await wait(4)	//base delay on grid?	
 			destination.permissionOverwrites.edit(userID, { ViewChannel: true });
 			await interaction.followUp({ content: `You have moved to ${destination.name}`, flags : MessageFlags.Ephemeral });
 		});
