@@ -9,7 +9,7 @@ module.exports = {
 		                                                                //add a subcommand thingy
 		,
 	async execute(interaction) {
-		checkUser(interaction, async (interaction) => {
+		checkUser(interaction, async (interaction) => {			// figure out modals for this
 			await interaction.deferReply();
 			// const index = resources.findIndex(resource => resource.name == message);
 			// if(index >= 0){

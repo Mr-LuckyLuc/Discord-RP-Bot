@@ -54,7 +54,7 @@ module.exports = {
 			if (focusedOption.name === 'tool') {
 				choices = filterSortFormat(focusedValue, player.tools);
 			} else {
-				tools = player.tools.filter(tool => tool.name === interaction.options.find(option => option.name === 'tool').value);
+				tools = player.tools.filter(tool => tool.name === interaction.options.getString('tool'));
 				const unformatted = tools.filter(tool => tool.durability.toString().includes(focusedValue));
 				choices = unformatted.map(tool => {
 					return { name : tool.durability, value : tool.durability };
@@ -65,8 +65,8 @@ module.exports = {
 	}
 	,
 	async execute(interaction) {
-		checkUser(interaction, async (interaction) => {
             await interaction.deferReply({ flags: MessageFlags.Ephemeral });
+		checkUser(interaction, async (interaction) => {
 			const userId = interaction.user.id;
 			const player = await dbScripts.getPlayerId(userId);
 			if (interaction.options.getSubcommand() === 'item') {
@@ -93,14 +93,12 @@ module.exports = {
 				const tool = player.tools.find(tool => tool.name === option && tool.durability === toolDurability)
 				if (tool) {
 					console.debug('found');
-					if (player.money >= tool.valuePD*tool.durability) {
-						console.debug('selling');
-						player.tools.pop(tool);
-						dbScripts.deletePlayer2Tool(player.id, tool.id, tool.durability);
-						console.debug('half');
-						player.money += Math.round(tool.valuePD*tool.durability);
-						dbScripts.changePlayerMoney(player.id, player.money);
-					}
+					console.debug('selling');
+					player.tools.pop(tool);
+					dbScripts.deletePlayer2Tool(player.id, tool.id, tool.durability);
+					console.debug('half');
+					player.money += Math.round(tool.valuePD*tool.durability);
+					dbScripts.changePlayerMoney(player.id, player.money);
 					await interaction.editReply({ content : `You are selling a ${tool.name}.` });
 				} else {
 					await interaction.editReply({ content : `The tool ${option} could not be found, try again.` });

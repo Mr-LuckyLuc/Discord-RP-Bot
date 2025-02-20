@@ -63,10 +63,10 @@ class dbScripts {
 
   static async addTool(tool) {
     console.log("adding tool!");
-    await this.pool.execute(`insert into tool (name, durability, damage, speed, resourceId, valuePD) values ('${tool.name}', ${tool.durability}, ${tool.damage}, ${tool.speed}, ${tool.resource.resourceId}, ${tool.valuePD});`);
+    await this.pool.execute(`insert into tool (name, durability, damage, resourceId, valuePD) values ('${tool.name}', ${tool.durability}, ${tool.damage}, ${tool.resource.resourceId}, ${tool.valuePD});`);
     const [result] = await this.pool.execute(`select LAST_INSERT_ID();`);
     console.info("Query Result:", result);
-    tool = { id : result, name : tool.name, durability : tool.durability, damage : tool.damage, speed : tool.speed, resource: tool.resource, valuePD : tool.valuePD};
+    tool = { id : result, name : tool.name, durability : tool.durability, damage : tool.damage, resource: tool.resource, valuePD : tool.valuePD};
     this.tools.push(tool);
     return tool;
   }
@@ -157,13 +157,8 @@ class dbScripts {
       `SELECT id, name, value FROM player2items p2i LEFT JOIN item i ON i.id = p2i.itemId WHERE playerId = ${playerId};`);
     console.info("Query Result:", items);
     const [tools] = await this.pool.execute(
-      `SELECT id, name, toolDurability AS durability, damage, speed, resourceId, valuePD FROM player2tools p2t LEFT JOIN tool t ON t.id = p2t.toolId WHERE playerId = ${playerId};`);
+      `SELECT id, name, toolDurability AS durability, damage, resourceId, valuePD FROM player2tools p2t LEFT JOIN tool t ON t.id = p2t.toolId WHERE playerId = ${playerId};`);
     console.info("Query Result:", tools);
-    // const tools = [];
-    // for (const toolConnection of toolConnections) {
-    //   const id = toolConnection.id;
-    //   tools.push({ id : id, })
-    // }
     const player = {id: result.id, money: result.money, items: items, tools: tools};
     this.players.push(player);
     return player;

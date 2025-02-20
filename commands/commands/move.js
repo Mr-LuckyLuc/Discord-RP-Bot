@@ -23,19 +23,24 @@ module.exports = {
 	}
 	,
 	async execute(interaction) {
+		await interaction.deferReply({ flags : MessageFlags.Ephemeral });
 		checkUser(interaction, async (interaction) => {
-			await interaction.deferReply();
 			const userID = interaction.user.id;
 			const channelsCache = interaction.member.guild.channels.cache;
 			const origin = channelsCache.find(channel => channel.id == interaction.channelId);
-			const destination = channelsCache.find(channel => channel.name == interaction.options.getString('destination'));
+			const channelList = dbScripts.getLocations().map(location => location.name);
+			const option = interaction.options.getString('destination');
+			if (channelList.includes(option)) {
+				const destination = channelsCache.find(channel => channel.name == option);
 
-			await interaction.editReply({ content: `You are being moved to ${destination.name}`, flags : MessageFlags.Ephemeral });	//check if destination is in list with destinations
-			//travel channel perhabs??
-			origin.permissionOverwrites.edit(userID, { ViewChannel: false });
-			await wait(4)	//base delay on grid?	
-			destination.permissionOverwrites.edit(userID, { ViewChannel: true });
-			await interaction.followUp({ content: `You have moved to ${destination.name}`, flags : MessageFlags.Ephemeral });
+				await interaction.editReply({ content: `You are being moved to ${destination.name}.` });
+				//travel channel perhabs??
+				origin.permissionOverwrites.edit(userID, { ViewChannel: false });
+				await wait(4)	//base delay on grid?	
+				destination.permissionOverwrites.edit(userID, { ViewChannel: true });
+				await interaction.followUp({ content: `You have moved to ${destination.name}.` });
+			}
+			await interaction.editReply({ content: `Could not find a location with the name ${option}.` });
 		});
 	},
 };
