@@ -4,6 +4,8 @@ const { checkUser, filterSortFormat } = require('../commandmethods.js');
 
 module.exports = {
 	//for cooldowns see discord.js docs: https://discordjs.guide/additional-features/cooldowns.html
+	cooldown: 60,
+	cooldownMessage: `You are to tired to mine again, you can mine again $until.`,
 	data: new SlashCommandBuilder()
 		.setName('mine')
 		.setDescription('Mine a resource')
@@ -14,7 +16,7 @@ module.exports = {
 			.setAutocomplete(true)
 		)
 		,
-	async autocomplete() {
+	async autocomplete(interaction) {
 		const focusedValue = interaction.options.getFocused(true).value;
 		const resources = dbScripts.getResources();
 		const choices = filterSortFormat(focusedValue, resources);
@@ -23,15 +25,24 @@ module.exports = {
 	,
 	async execute(interaction) {
 		checkUser(interaction, async (interaction) => {
-			await interaction.deferReply();
-			const resource = dbScripts.getResourceName(interaction.getString('resource'));
-			// const index = resources.findIndex(resource => resource.name == message);
-			// if(index >= 0){
-			// 	const resource = resources[index];
-			// 	msg.channel.send(`${msg.author.displayName} is mining ${resource.name}.`);
-			// 	Players.mine(resource);
-			// }
-			await interaction.editReply({ content: 'You are now mining for resources', flags : MessageFlags.Ephemeral });
+			await interaction.deferReply({ flags : MessageFlags.Ephemeral });
+			const resource = await dbScripts.getResourceName(interaction.options.getString('resource'));
+			if (resource) {
+				const player = await dbScripts.getPlayerId(interaction.user.id);
+				const tool = player.tools.find(tool => tool.resource.name == resource.name);
+				if (tool) {
+					const amount = Math.floor(resource.lootInterval / tool.damage); 
+					dbScripts.addPlayer2Item(player.id, resource.item.id);
+					player.items.push(resource.item);
+					dbScripts.changeToolDurability(player.id, tool.id);
+					tool.durability -= 1;
+					interaction.editReply({ content : `You you mined a ${resource.name} for ${amount} ${resource.item.name}${amount>1?'s':''}.` });
+				} else {
+					interaction.editReply({ content : 'You do not have the right tool.' });	
+				}
+			} else {
+				interaction.editReply({ content : 'The resource you want to harvest was not found.' });
+			}
 		});
 	},
 };

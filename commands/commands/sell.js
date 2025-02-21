@@ -42,7 +42,6 @@ module.exports = {
 		)
 		,
 	async autocomplete(interaction) {
-		console.log(interaction.options)
 		const focusedValue = interaction.options.getFocused(true).value;
 		const player = await dbScripts.getPlayerId(interaction.user.id);
 		let choices;
@@ -65,44 +64,48 @@ module.exports = {
 	}
 	,
 	async execute(interaction) {
-            await interaction.deferReply({ flags: MessageFlags.Ephemeral });
+		await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 		checkUser(interaction, async (interaction) => {
-			const userId = interaction.user.id;
-			const player = await dbScripts.getPlayerId(userId);
-			if (interaction.options.getSubcommand() === 'item') {
-				const option = interaction.options.getString('item');
-				const list = player.items.filter(playerItem => playerItem.name === option);
-				const amount = interaction.options.getInteger('amount') ? interaction.options.getInteger('amount') : 1;
-				if (list.length >= amount) {
-					const item = list[0];
-					for (let i = 0; i < amount; i++) {
-						player.items.pop(item);
-						dbScripts.deletePlayer2Item(player.id, item.id);
+			if ((await dbScripts.getLocationId(interaction.channelId)).isShop) {
+				const userId = interaction.user.id;
+				const player = await dbScripts.getPlayerId(userId);
+				if (interaction.options.getSubcommand() === 'item') {
+					const option = interaction.options.getString('item');
+					const list = player.items.filter(playerItem => playerItem.name === option);
+					const amount = interaction.options.getInteger('amount') ? interaction.options.getInteger('amount') : 1;
+					if (list.length >= amount) {
+						const item = list[0];
+						for (let i = 0; i < amount; i++) {
+							player.items.pop(item);
+							dbScripts.deletePlayer2Item(player.id, item.id);
+						}
+						player.money += item.value*amount;
+						dbScripts.changePlayerMoney(player.id, player.money);
+						await interaction.editReply({ content : `You are selling ${amount} ${item.name}${amount>1?'s':''}.` });
+					} else if (list.length) {
+						await interaction.editReply({ content : `You do not have ${amount} ${option}${amount>1?'s':''} to sell, you only have ${list.length}.` });
+					} else {
+						await interaction.editReply({ content : `The item ${option} could not be found, try again.` });
 					}
-					player.money += item.value*amount;
-					dbScripts.changePlayerMoney(player.id, player.money);
-					await interaction.editReply({ content : `You are selling ${amount} ${item.name}${amount>1?'s':''}.` });
-				} else if (list.length) {
-					await interaction.editReply({ content : `You do not have ${amount} ${option}${amount>1?'s':''} to sell, you only have ${list.length}.` });
-				} else {
-					await interaction.editReply({ content : `The item ${option} could not be found, try again.` });
+				} else if (interaction.options.getSubcommand() === 'tool') {
+					const option = interaction.options.getString('tool');
+					const toolDurability = interaction.options.getInteger('durability');
+					const tool = player.tools.find(tool => tool.name === option && tool.durability === toolDurability)
+					if (tool) {
+						console.debug('found');
+						console.debug('selling');
+						player.tools.pop(tool);
+						dbScripts.deletePlayer2Tool(player.id, tool.id, tool.durability);
+						console.debug('half');
+						player.money += Math.round(tool.valuePD*tool.durability);
+						dbScripts.changePlayerMoney(player.id, player.money);
+						await interaction.editReply({ content : `You are selling a ${tool.name}.` });
+					} else {
+						await interaction.editReply({ content : `The tool ${option} could not be found, try again.` });
+					}
 				}
-			} else if (interaction.options.getSubcommand() === 'tool') {
-				const option = interaction.options.getString('tool');
-				const toolDurability = interaction.options.getInteger('durability');
-				const tool = player.tools.find(tool => tool.name === option && tool.durability === toolDurability)
-				if (tool) {
-					console.debug('found');
-					console.debug('selling');
-					player.tools.pop(tool);
-					dbScripts.deletePlayer2Tool(player.id, tool.id, tool.durability);
-					console.debug('half');
-					player.money += Math.round(tool.valuePD*tool.durability);
-					dbScripts.changePlayerMoney(player.id, player.money);
-					await interaction.editReply({ content : `You are selling a ${tool.name}.` });
-				} else {
-					await interaction.editReply({ content : `The tool ${option} could not be found, try again.` });
-				}
+			} else {
+				interaction.editReply({ content : `You are not in a shop location, please move to a shop location before selling anything`});
 			}
         });
 	},

@@ -13,7 +13,7 @@ class dbScripts {
   });
 
   static async query(queryString) {
-    console.log('querying special query');
+    console.log('Querying special query');
     const [result] = await this.pool.execute(queryString);
     console.info("Query Result:", result);
     return result;
@@ -27,7 +27,7 @@ class dbScripts {
   static tools = [];
 
   static async addPlayer(player) {
-    console.log("adding player!");
+    console.log("Adding player!");
     player = { id : player.id, money : player.money, items : [], tools : [] };
     await this.pool.execute(`insert into player (id, money) values (${player.id}, ${player.money});`);
     this.players.push(player);
@@ -35,14 +35,14 @@ class dbScripts {
   }
 
   static async addLocation(location) {
-    console.log("adding location!");
+    console.log("Adding location!");
     await this.pool.execute(`insert into location (id, name, isShop) values (${location.id}, '${location.name}', ${location.isShop});`);
     this.locations.push(location);
     return result;
   }
 
   static async addItem(item) {
-    console.log("adding item!");
+    console.log("Adding item!");
     await this.pool.execute(`insert into item (name, value) values ('${item.name}', ${item.value});`);
     const [result] = await this.pool.execute(`select LAST_INSERT_ID();`);
     console.info("Query Result:", result);
@@ -52,7 +52,7 @@ class dbScripts {
   }
 
   static async addResource(resource) {
-    console.log("adding resource!");
+    console.log("Adding resource!");
     await this.pool.execute(`insert into resource (name, itemId, lootInterval) values ('${resource.name}', ${resource.item.itemId}, ${resource.lootInterval});`);
     const [result] = await this.pool.execute(`select LAST_INSERT_ID();`);
     console.info("Query Result:", result);
@@ -62,7 +62,7 @@ class dbScripts {
   }
 
   static async addTool(tool) {
-    console.log("adding tool!");
+    console.log("Adding tool!");
     await this.pool.execute(`insert into tool (name, durability, damage, resourceId, valuePD) values ('${tool.name}', ${tool.durability}, ${tool.damage}, ${tool.resource.resourceId}, ${tool.valuePD});`);
     const [result] = await this.pool.execute(`select LAST_INSERT_ID();`);
     console.info("Query Result:", result);
@@ -72,79 +72,65 @@ class dbScripts {
   }
 
   static async addPlayer2Tool(playerId, toolId, toolDurability) {
-    console.log("adding tool to inventory!");
+    console.log("Adding tool to inventory!");
     const [result] = await this.pool.execute(
       `insert into player2tools (playerId, toolId, toolDurability) values (${playerId}, ${toolId}, ${toolDurability});`);
-    console.info("Query Result:", result);
+    // console.info("Query Result:", result);
     return result;
   }
 
   static async addPlayer2Item(playerId, itemId) {
-    console.log("adding item to inventory!");
+    console.log("Adding item to inventory!");
     const [result] = await this.pool.execute(
       `insert into player2items (playerId, itemId) values (${playerId}, ${itemId});`);
-    console.info("Query Result:", result);
+    // console.info("Query Result:", result);
     return result;
   }
 
   static async changeToolDurability(playerId, toolId, oldDurability, newDurability) {
-    console.log("Changing tool durability!");
-    const [result] = await this.pool.execute(
-      `update player2tools set toolDurability = ${newDurability} where playerId = ${playerId} and toolId = ${toolId} and toolDurability = ${oldDurability} limit 1;`);
-    console.info("Query Result:", result);
-    return result;
+    console.log("Changing tool durability custom!");
+    this.pool.execute(`update player2tools set toolDurability = ${newDurability} where playerId = ${playerId} and toolId = ${toolId} and toolDurability = ${oldDurability} limit 1;`);
+  }
+
+  static async changeToolDurability(playerId, toolId) {
+    console.log("Changing tool durability by 1!");
+    const result = await this.pool.execute(`update player2tools set toolDurability = toolDurability-1 where playerId = ${playerId} and toolId = ${toolId} order by toolDurability asc limit 1;`);
+    console.debug(result);
   }
 
   static async changePlayerMoney(id, money) {
-    console.log("Changing tool durability!");
-    const [result] = await this.pool.execute(
-      `update player set money = ${money} where id = ${id};`);
-    console.info("Query Result:", result);
-    return result;
+    console.log("Changing player money!");
+    this.pool.execute(`update player set money = ${money} where id = ${id};`);
   }
 
   static async deleteLocation(id) {
-    console.log("deleting location!");
-    const [result] = await this.pool.execute(`delete from location where id = ${id};`);
-    console.info("Query Result:", result);
-    return result;
+    console.log("Deleting location!");
+    this.pool.execute(`delete from location where id = ${id};`);
   }
 
   static async deleteItem(id) {
-    console.log("deleting item!");
-    const [result] = await this.pool.execute(`delete from item where id = ${id});`);
-    console.info("Query Result:", result);
-    return result;
+    console.log("Deleting item!");
+    this.pool.execute(`delete from item where id = ${id});`);
   }
 
   static async deleteResource(id) {
-    console.log("deleting resource!");
-    const [result] = await this.pool.execute(`delete from resource where id = ${id});`);
-    console.info("Query Result:", result);
-    return result;
+    console.log("Deleting resource!");
+    this.pool.execute(`delete from resource where id = ${id});`);
   }
 
   static async deleteTool(id) {
-    console.log("deleting tool!");
-    const [result] = await this.pool.execute(`delete from tool where id = ${id});`);
-    console.info("Query Result:", result);
-    return result;
+    console.log("Deleting tool!");
+    this.pool.execute(`delete from tool where id = ${id});`);
   }
 
   static async deletePlayer2Tool(playerId, toolId, toolDurability) {
-    console.log("deleting tool from inventory!");
-    const [result] = await this.pool.execute(
-      `delete from player2tools where playerId = ${playerId} and toolId = ${toolId} and toolDurability = ${toolDurability} limit 1;`);
-    console.info("Query Result:", result);
-    return result;
+    console.log("Deleting tool from inventory!");
+    this.pool.execute(`delete from player2tools where playerId = ${playerId} and toolId = ${toolId} and toolDurability = ${toolDurability} limit 1;`);
   }
 
   static async deletePlayer2Item(playerId, itemId) {
-    console.log("deleting item from inventory!");
-    const [result] = await this.pool.execute(
-      `delete from player2items where playerId = ${playerId} and itemId = ${itemId} limit 1;`);
-    console.info("Query Result:", result);
-    return result;
+    console.log("Deleting item from inventory!");
+    this.pool.execute(`delete from player2items where playerId = ${playerId} and itemId = ${itemId} limit 1;`);
   }
 
   static async loadPlayer(playerId) {
@@ -153,13 +139,23 @@ class dbScripts {
       `SELECT * FROM player WHERE id = ${playerId};`);
     console.info("Query Result:", result);
     if (result === undefined) return undefined;
-    const [items] = await this.pool.execute(
-      `SELECT id, name, value FROM player2items p2i LEFT JOIN item i ON i.id = p2i.itemId WHERE playerId = ${playerId};`);
-    console.info("Query Result:", items);
-    const [tools] = await this.pool.execute(
-      `SELECT id, name, toolDurability AS durability, damage, resourceId, valuePD FROM player2tools p2t LEFT JOIN tool t ON t.id = p2t.toolId WHERE playerId = ${playerId};`);
-    console.info("Query Result:", tools);
-    const player = {id: result.id, money: result.money, items: items, tools: tools};
+    const [itemData] = await this.pool.execute(
+      `SELECT itemId FROM player2items WHERE playerId = ${playerId};`);
+    console.info("Query Result:", itemData);
+    const items = [];
+    itemData.forEach(data => {
+      items.push(this.getItemId(data.itemId));
+    });
+    const [toolData] = await this.pool.execute(
+      `SELECT toolId, toolDurability FROM player2tools WHERE playerId = ${playerId};`);
+    console.info("Query Result:", toolData);
+    const tools = [];
+    toolData.forEach(data => {
+      const tool = this.getToolId(data.toolId);
+      tool.durability = data.toolDurability;
+      tools.push(tool);
+    });
+    const player = {id: result.id, money: result.money, items: items, tools: tools, interaction : null};
     this.players.push(player);
     return player;
   }
@@ -183,7 +179,7 @@ class dbScripts {
   static async loadResources() {
     console.log("Gathering resources!");
     const [result] = await this.pool.execute(
-      `SELECT * FROM resource`);
+      `SELECT id, name, lootInterval, itemId AS item FROM resource`);
     console.info("Query Result:", result);
     return result;
   }
@@ -191,7 +187,7 @@ class dbScripts {
   static async loadTools() {
     console.log("Gathering tools!");
     const [result] = await this.pool.execute(
-      `SELECT * FROM tool`);
+      `SELECT id, name, durability, damage, valuePD, resourceId AS resource FROM tool;`);
     console.info("Query Result:", result);
     return result;
   }
@@ -275,7 +271,6 @@ class dbScripts {
   }
 }
 
-//TODO: save all player progression
 //TODO: remove all useless results, their logging and returning
 
 module.exports = {

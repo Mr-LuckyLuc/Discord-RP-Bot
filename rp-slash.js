@@ -7,6 +7,7 @@ const {dbScripts} = require('./dbScripts');
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 client.commands = new Collection();
+client.cooldowns = new Collection();
 
 const commandsPath = path.join(path.join(__dirname, "commands"), "commands");
 const commandsFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));

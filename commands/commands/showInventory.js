@@ -14,19 +14,25 @@ module.exports = {
 			//showInventory
 			const player = await dbScripts.getPlayerId(interaction.user.id);
 			console.debug(player);
-			const items = player.items;														// map these so only name is kept and the property name is name?
+			const items = player.items;
 			const tools = player.tools;
 			console.debug(items);
 			let inventoryStr = '';
-			inventoryStr += '# Items';
+			inventoryStr += `# Money: ${player.money}`;
+			inventoryStr += '\n# Items';
 			items.forEach(item => {
-				inventoryStr += `\n- Name: ${item.name} Value: ${item.value}`;
+				inventoryStr += `\n- **_${item.name}_**`;
+				inventoryStr += `\n\tValue: ${item.value}`;
 			});
 			inventoryStr += '\n# Tools';
 			inventoryStr += `\n`;
 			tools.forEach(tool => {
-				inventoryStr += `\n- Name: ${tool.name} Value: ${tool.valuePD*tool.durability}`;
-				inventoryStr += `\n\tDurability: ${tool.durability} Damage: ${tool.damage} `; //Resource: ${tool.resource.name}
+				inventoryStr += `\n- **_${tool.name}_**`;
+				inventoryStr += `\n\tValue: ${tool.valuePD*tool.durability}`;
+				inventoryStr += `\n\tDurability: ${tool.durability}`;
+				console.debug(tool);
+				inventoryStr += `\n\tDamage: ${tool.damage}`;
+				inventoryStr += `\n\tResource: ${tool.resource.name}`;
 				inventoryStr += `\n`;
 			});
 			interaction.editReply(inventoryStr);

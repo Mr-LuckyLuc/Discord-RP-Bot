@@ -36,11 +36,12 @@ module.exports = {
 				await interaction.editReply({ content: `You are being moved to ${destination.name}.` });
 				//travel channel perhabs??
 				origin.permissionOverwrites.edit(userID, { ViewChannel: false });
-				await wait(4)	//base delay on grid?	
+				await wait(4000)	//base delay on grid?	
 				destination.permissionOverwrites.edit(userID, { ViewChannel: true });
-				await interaction.followUp({ content: `You have moved to ${destination.name}.` });
+				// await interaction.followUp({ content: `You have moved to ${destination.name}.` });	//useless
+			} else {
+				await interaction.editReply({ content: `Could not find a location with the name ${option}.` });
 			}
-			await interaction.editReply({ content: `Could not find a location with the name ${option}.` });
 		});
 	},
 };
