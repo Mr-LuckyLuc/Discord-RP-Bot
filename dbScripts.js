@@ -1,12 +1,20 @@
 const mysql = require('mysql2/promise');
 
+const {
+    MYSQL_HOST: HOST,
+    MYSQL_USER: USER,
+    MYSQL_PASSWORD: PASSWORD,
+    MYSQL_DB: DB
+} = process.env;
+
+
 class dbScripts {
 
   static pool = mysql.createPool({
-    host: "localhost",
-    user: "root",
-    password: "root",
-    database: "castleRP",
+    host: HOST,
+    user: USER,
+    password: PASSWORD,
+    database: DB,
     waitForConnections: true,
     connectionLimit: 4,
     queueLimit: 0
