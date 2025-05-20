@@ -57,7 +57,7 @@ class dbScripts {
   static tools = [];
 
   static async addPlayer(player) {
-    console.log("Adding player!");
+    console.log("➕ Adding player!");
     player = { id : player.id, money : player.money, items : [], tools : [] };
     await this.query(`insert into player (id, money) values (?, ?)`, [player.id, player.money]);
     this.players.push(player);
@@ -65,14 +65,14 @@ class dbScripts {
   }
 
   static async addLocation(location) {
-    console.log("Adding location!");
+    console.log("➕ Adding location!");
     await this.query(`insert into location (id, name, isShop) values (?, ?, ?)`, [location.id, location.name, location.isShop]);
     this.locations.push(location);
     return location;
   }
 
   static async addItem(item) {
-    console.log("Adding item!");
+    console.log("➕ Adding item!");
     await this.query(`insert into item (name, value) values (?, ?)`, [item.name, item.value]);
     const [result] = await this.query(`select LAST_INSERT_ID();`);
     item = { id : result["LAST_INSERT_ID()"], name : item.name, value : item.value };
@@ -81,7 +81,7 @@ class dbScripts {
   }
 
   static async addResource(resource) {
-    console.log("Adding resource!");
+    console.log("➕ Adding resource!");
     await this.query(`insert into resource (name, itemId, lootInterval) values (?, ?, ?)`, [resource.name, resource.item.itemId, resource.lootInterval]);
     const [result] = await this.query(`select LAST_INSERT_ID();`);
     resource = { id : result["LAST_INSERT_ID()"], name : resource.name, item : resource.item, lootInterval : resource.lootInterval };
@@ -90,7 +90,7 @@ class dbScripts {
   }
 
   static async addTool(tool) {
-    console.log("Adding tool!");
+    console.log("➕ Adding tool!");
     await this.query(`insert into tool (name, durability, damage, resourceId, valuePD) values (?, ?, ?, ?, ?)`, [tool.name, tool.durability, tool.damage, tool.resource.resourceId, tool.valuePD]);
     const [result] = await this.query(`select LAST_INSERT_ID();`);
     tool = { id : result["LAST_INSERT_ID()"], name : tool.name, durability : tool.durability, damage : tool.damage, resource: tool.resource, valuePD : tool.valuePD };
@@ -99,62 +99,62 @@ class dbScripts {
   }
 
   static async addPlayer2Tool(playerId, toolId, toolDurability) {
-    console.log("Adding tool to inventory!");
+    console.log("➕ Adding tool to inventory!");
     return this.query(`insert into player2tools (playerId, toolId, toolDurability) values (?, ?, ?)`, [playerId, toolId, toolDurability]);
   }
 
   static async addPlayer2Item(playerId, itemId) {
-    console.log("Adding item to inventory!");
+    console.log("➕ Adding item to inventory!");
     return this.query(`insert into player2items (playerId, itemId) values (?, ?)`, [playerId, itemId]);
   }
 
   static async changeToolDurability(playerId, toolId, oldDurability, newDurability) {
-    console.log("Changing tool durability custom!");
+    console.log("✏️Changing tool durability custom!");
     return this.query(`update player2tools set toolDurability = ? where playerId = ? and toolId = ? and toolDurability = ? limit 1`, [newDurability, playerId, toolId, oldDurability]);
   }
 
   static async changeToolDurabilityByOne(playerId, toolId) {
-    console.log("Changing tool durability by 1!");
+    console.log("✏️ Changing tool durability by 1!");
     return this.query(`update player2tools set toolDurability = toolDurability-1 where playerId = ? and toolId = ? order by toolDurability asc limit 1`, [playerId, toolId]);
   }
 
   static async changePlayerMoney(id, money) {
-    console.log("Changing player money!");
+    console.log("✏️ Changing player money!");
     return this.query(`update player set money = ? where id = ?`, [money, id]);
   }
 
   static async deleteLocation(id) {
-    console.log("Deleting location!");
+    console.log("🗑️ Deleting location!");
     return this.query(`delete from location where id = ?`, [id]);
   }
 
   static async deleteItem(id) {
-    console.log("Deleting item!");
+    console.log("🗑️ Deleting item!");
     return this.query(`delete from item where id = ?`, [id]);
   }
 
   static async deleteResource(id) {
-    console.log("Deleting resource!");
+    console.log(🗑️ "Deleting resource!");
     return this.query(`delete from resource where id = ?`, [id]);
   }
 
   static async deleteTool(id) {
-    console.log("Deleting tool!");
+    console.log("🗑️ Deleting tool!");
     return this.query(`delete from tool where id = ?`, [id]);
   }
 
   static async deletePlayer2Tool(playerId, toolId, toolDurability) {
-    console.log("Deleting tool from inventory!");
+    console.log("🗑️ Deleting tool from inventory!");
     return this.query(`delete from player2tools where playerId = ? and toolId = ? and toolDurability = ? limit 1`, [playerId, toolId, toolDurability]);
   }
 
   static async deletePlayer2Item(playerId, itemId) {
-    console.log("Deleting item from inventory!");
+    console.log("🗑️ Deleting item from inventory!");
     return this.query(`delete from player2items where playerId = ? and itemId = ? limit 1`, [playerId, itemId]);
   }
 
   static async loadPlayer(playerId) {
-    console.log("Loading a player!");
+    console.log("⬇️ Loading a player!");
     const fullResult = await this.query(`SELECT * FROM player WHERE id = ?`, [playerId]);
     console.log(fullResult);
     const [[result]] = fullResult;
@@ -173,22 +173,22 @@ class dbScripts {
   }
 
   static async loadLocations() {
-    console.log("Gathering locations!");
+    console.log("⬇️ Loading locations!");
     return this.query(`SELECT * FROM location`);
   }
 
   static async loadItems() {
-    console.log("Gathering items!");
+    console.log("⬇️ Loading items!");
     return this.query(`SELECT * FROM item`);
   }
 
   static async loadResources() {
-    console.log("Gathering resources!");
+    console.log("⬇️ Loading resources!");
     return this.query(`SELECT id, name, lootInterval, itemId AS item FROM resource`);
   }
 
   static async loadTools() {
-    console.log("Gathering tools!");
+    console.log("⬇️ Loading tools!");
     return this.query(`SELECT id, name, durability, damage, valuePD, resourceId AS resource FROM tool`);
   }
 
