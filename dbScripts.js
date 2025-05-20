@@ -134,7 +134,7 @@ class dbScripts {
   }
 
   static async deleteResource(id) {
-    console.log(🗑️ "Deleting resource!");
+    console.log("🗑️ Deleting resource!");
     return this.query(`delete from resource where id = ?`, [id]);
   }
 
@@ -154,7 +154,6 @@ class dbScripts {
   }
 
   static async loadPlayer(playerId) {
-    console.log("AAAAAAAAAHH");
     console.log("⬇️ Loading a player!");
     const fullResult = await this.query(`SELECT * FROM player WHERE id = ?`, [playerId]);
     console.log(fullResult);
