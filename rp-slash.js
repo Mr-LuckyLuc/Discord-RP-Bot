@@ -1,3 +1,5 @@
+console.log("Starting");
+
 require("dotenv").config({ path: __dirname+'/.env' }); //to start process from .env file
 
 const fs = require('node:fs');
@@ -36,5 +38,7 @@ for (const file of eventFiles) {
 		client.on(event.name, (...args) => event.execute(...args));
 	}
 }
+
+console.log("Logging in to bod");
 
 client.login(process.env.TOKEN);
