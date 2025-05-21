@@ -155,10 +155,8 @@ class dbScripts {
 
   static async loadPlayer(playerId) {
     console.log("⬇️ Loading a player!");
-    const result = await this.query(`SELECT * FROM player WHERE id = ?`, [playerId]);
+    const [result] = await this.query(`SELECT * FROM player WHERE id = ?`, [playerId]);
     console.log(result);
-    console.log(result.length);
-    console.log(result.size);
     if (result.length == 0) return undefined;
     const itemData = await this.query(`SELECT itemId FROM player2items WHERE playerId = ?`, [playerId]);
     const items = itemData.map(data => this.getItemId(data.itemId));

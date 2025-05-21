@@ -28,7 +28,7 @@ module.exports = {
 
 		if (now < expirationTime) {
 			const expiredTimestamp = Math.round(expirationTime / 1000);
-			const reply = (command.cooldownMessage.replace('$until', `<t:${expiredTimestamp}:R>`) ??  `Please wait, you are on a cooldown for \`${command.data.name}\`. You can use it again <t:${expiredTimestamp}:R>.`);
+			const reply = ('$until', `<t:${expiredTimestamp}:R>`) ??  `Please wait, you are on a cooldown for \`${command.data.name}\`. You can use it again <t:${expiredTimestamp}:R>.`;
 			return interaction.reply({ content: reply, flags: MessageFlags.Ephemeral });
 		}
 	}
