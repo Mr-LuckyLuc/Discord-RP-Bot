@@ -14,7 +14,7 @@ client.cooldowns = new Collection();
 const commandsPath = path.join(path.join(__dirname, "commands"), "commands");
 const commandsFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
 
-dbScripts.startUp();
+dbScripts.load();
 
 for (const file of commandsFiles) {
     const filePath = path.join(commandsPath, file);

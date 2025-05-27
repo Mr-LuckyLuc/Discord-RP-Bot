@@ -209,7 +209,7 @@ class dbScripts {
   static getToolName(name) { return this.tools.find(tool => tool.name == name); }
   static getToolId(id) { return this.tools.find(tool => tool.id == id); }
 
-  static async startUp() {
+  static async load() {
     this.locations = await this.loadLocations();
     this.items = await this.loadItems();
     this.resources = await this.loadResources();
