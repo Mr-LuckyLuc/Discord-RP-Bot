@@ -45,10 +45,10 @@ const port = 3000;
 
 app.get('/', (req, res) => {
     dbScripts.load();
-  res.status(200).send('Loaded');
+    res.status(200).send('Loaded');
 });
 
-app.listen(port, () => {
+app.listen(port, "0.0.0.0" () => {
     console.log(`Bot api on port ${port}`)
 });
 
