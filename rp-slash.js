@@ -40,19 +40,19 @@ for (const file of eventFiles) {
 	}
 }
 
-// console.log("starting endpoint");
+console.log("starting endpoint");
 
-// const app = express();
-// const port = 3000;
+const app = express();
+const port = 3000;
 
-// app.get('/update', (req, res) => {
-//     dbScripts.load();
-//     res.status(200).send('Loaded');
-// });
+app.get('/update', (req, res) => {
+    dbScripts.load();
+    res.status(200).send('Loaded');
+});
 
-// app.listen(port, "0.0.0.0", () => {
-//     console.log(`Bot api on port ${port}`)
-// });
+app.listen(port, "0.0.0.0", () => {
+    console.log(`Bot api on port ${port}`)
+});
 
 console.log("Logging in to bot");
 
