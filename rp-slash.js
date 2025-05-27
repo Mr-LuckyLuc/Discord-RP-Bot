@@ -43,7 +43,7 @@ for (const file of eventFiles) {
 const app = express();
 const port = 3000;
 
-app.get('/', (req, res) => {
+app.get('/update', (req, res) => {
     dbScripts.load();
     res.status(200).send('Loaded');
 });
