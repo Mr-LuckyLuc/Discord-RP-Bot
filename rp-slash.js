@@ -4,6 +4,7 @@ require("dotenv").config({ path: __dirname+'/.env' }); //to start process from .
 
 const fs = require('node:fs');
 const path = require('node:path');
+const express = require('express')
 const { Client, Collection, Events, GatewayIntentBits } = require('discord.js');
 const {dbScripts} = require('./dbScripts');
 
@@ -38,6 +39,17 @@ for (const file of eventFiles) {
 		client.on(event.name, (...args) => event.execute(...args));
 	}
 }
+
+const app = express();
+const port = 3000;
+
+app.get('/', (req, res) => {
+dbScripts.load();
+});
+
+app.listen(port, () => {
+console.log(`Bot api on port ${port}`)
+});
 
 console.log("Logging in to bod");
 
