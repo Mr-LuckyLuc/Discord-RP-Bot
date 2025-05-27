@@ -48,7 +48,7 @@ app.get('/', (req, res) => {
     res.status(200).send('Loaded');
 });
 
-app.listen(port, "0.0.0.0" () => {
+app.listen(port, "0.0.0.0", () => {
     console.log(`Bot api on port ${port}`)
 });
 
