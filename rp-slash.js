@@ -44,11 +44,12 @@ const app = express();
 const port = 3000;
 
 app.get('/', (req, res) => {
-dbScripts.load();
+    dbScripts.load();
+  res.status(200).send('Loaded');
 });
 
 app.listen(port, () => {
-console.log(`Bot api on port ${port}`)
+    console.log(`Bot api on port ${port}`)
 });
 
 console.log("Logging in to bod");
