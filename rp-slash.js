@@ -45,7 +45,7 @@ console.log("starting endpoint");
 const app = express();
 const port = 3000;
 
-app.get('/update', (req, res) => {
+app.get('/', (req, res) => {
     dbScripts.load();
     res.status(200).send('Loaded');
 });
