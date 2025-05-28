@@ -29,12 +29,12 @@ module.exports = {
 			const resource = await dbScripts.getResourceName(interaction.options.getString('resource'));
 			if (resource) {
 				const player = await dbScripts.getPlayerId(interaction.user.id);
-				const tool = player.tools.find(tool => tool.resource.name == resource.name);
+				const tool = player.tools.find(tool => tool.resource == resource);
 				if (tool) {
 					const amount = Math.floor(resource.lootInterval / tool.damage); 
 					dbScripts.addPlayer2Item(player.id, resource.item.id);
 					player.items.push(resource.item);
-					dbScripts.changeToolDurability(player.id, tool.id);
+					dbScripts.changeToolDurability(player.id, tool.id, tool.durability, tool.durability-1);
 					tool.durability -= 1;
 					interaction.editReply({ content : `You you mined a ${resource.name} for ${amount} ${resource.item.name}${amount>1?'s':''}.` });
 				} else {

@@ -40,8 +40,6 @@ for (const file of eventFiles) {
 	}
 }
 
-console.log("starting endpoint");
-
 const app = express();
 const port = 3000;
 
@@ -53,7 +51,5 @@ app.get('/', (req, res) => {
 app.listen(port, "0.0.0.0", () => {
     console.log(`Bot api on port ${port}`)
 });
-
-console.log("Logging in to bot");
 
 client.login(process.env.TOKEN);

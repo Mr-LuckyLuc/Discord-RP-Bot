@@ -19,7 +19,6 @@ class Players {
         this.playerList[index] = this.defaultUser;
         this.playerList[index].id = id;
         this.playerList[index].name = name;
-        console.log(this.playerList);
     }
 
     static getPlayer(id) {
@@ -43,14 +42,12 @@ class Players {
         const player = this.getPlayer(id);
         this.addItem(player, item)
         player.money -= item.price;
-        console.log(this.playerList);
     }
 
     static sell(id, item) {
         const player = this.getPlayer(id);
         player.money += item.price;
         this.removeItem(player, item);
-        console.log(this.playerList);
     }
 
     static mine(id, resource){

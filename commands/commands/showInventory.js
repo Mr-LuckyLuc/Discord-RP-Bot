@@ -13,10 +13,8 @@ module.exports = {
 		checkUser(interaction, async (interaction) => {
 			//showInventory
 			const player = await dbScripts.getPlayerId(interaction.user.id);
-			console.debug(player);
 			const items = player.items;
 			const tools = player.tools;
-			console.debug(items);
 			let inventoryStr = '';
 			inventoryStr += `# Money: ${player.money}`;
 			inventoryStr += '\n# Items';
@@ -30,7 +28,6 @@ module.exports = {
 				inventoryStr += `\n- **_${tool.name}_**`;
 				inventoryStr += `\n\tValue: ${tool.valuePD*tool.durability}`;
 				inventoryStr += `\n\tDurability: ${tool.durability}`;
-				console.debug(tool);
 				inventoryStr += `\n\tDamage: ${tool.damage}`;
 				inventoryStr += `\n\tResource: ${tool.resource.name}`;
 				inventoryStr += `\n`;

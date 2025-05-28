@@ -92,11 +92,8 @@ module.exports = {
 					const toolDurability = interaction.options.getInteger('durability');
 					const tool = player.tools.find(tool => tool.name === option && tool.durability === toolDurability)
 					if (tool) {
-						console.debug('found');
-						console.debug('selling');
 						player.tools.pop(tool);
 						dbScripts.deletePlayer2Tool(player.id, tool.id, tool.durability);
-						console.debug('half');
 						player.money += Math.round(tool.valuePD*tool.durability);
 						dbScripts.changePlayerMoney(player.id, player.money);
 						await interaction.editReply({ content : `You are selling a ${tool.name}.` });

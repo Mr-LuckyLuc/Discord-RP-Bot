@@ -36,7 +36,6 @@ module.exports = {
 		)
 		,
 	async autocomplete(interaction) {
-		console.log(interaction.options)
 		const focusedValue = interaction.options.getFocused(true).value;
 		let choices;
 		if (interaction.options.getSubcommand() === 'item') {

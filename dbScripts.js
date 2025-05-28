@@ -109,7 +109,7 @@ class dbScripts {
   }
 
   static async changeToolDurability(playerId, toolId, oldDurability, newDurability) {
-    console.log("✏️Changing tool durability custom!");
+    console.log("✏️ Changing tool durability custom!");
     return this.query(`update player2tools set toolDurability = ? where playerId = ? and toolId = ? and toolDurability = ? limit 1`, [newDurability, playerId, toolId, oldDurability]);
   }
 
