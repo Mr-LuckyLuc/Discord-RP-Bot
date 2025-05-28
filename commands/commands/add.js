@@ -82,3 +82,5 @@ module.exports = {
 		});
 	},
 };
+
+// This file is hidden using gitignore, remember
