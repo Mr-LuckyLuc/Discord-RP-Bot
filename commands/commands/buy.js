@@ -49,7 +49,9 @@ module.exports = {
 	async execute(interaction) {
 		await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 		checkUser(interaction, async (interaction) => {
-			if ((await dbScripts.getLocationId(interaction.channelId)).isShop) {
+			const channel = await dbScripts.getLocationId(interaction.channelId);
+			console.log(channel);
+			if (channel.isShop) {
 				const userId = interaction.user.id;
 				const player = await dbScripts.getPlayerId(userId);
 				if (interaction.options.getSubcommand() === 'item') {
